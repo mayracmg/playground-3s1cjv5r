@@ -1,4 +1,4 @@
-# SQL Facilito
+# Bases de Datos Relaciones y SQL con MySQL
 ::: Clase 1
 
 En esta sección encontrarás ejemplos de consultas SQL, clasificas en los 3 tipos que existen, DDL, DCL y DML.
