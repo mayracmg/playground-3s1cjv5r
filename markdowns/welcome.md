@@ -271,7 +271,7 @@ REVOKE DELETE ON Menu FROM WebSite;
 :::
 
 ::: DML (Data Manipulation Language) 
-::: SELECTS
+::: SELECT
 
 Queries que permiten leer todos los campos para cada una de la tablas creadas previamente.
 + <span style="color:blue">SELECT *</span> Indica que se leerán todos los campos de la tabla.
@@ -349,7 +349,7 @@ FROM Usuarios_Activos;
 ```
 :::
 
-::: INSERTS
+::: INSERT
 Distintos ejemplos de como usar la inserción de datos.
 
 + <span style="color:blue">INSERT INTO</span> Luego de este texto debe de ir el nombre de la tabla.
@@ -431,7 +431,7 @@ FROM Menu_Copia
 WHERE Titulo LIKE 'Asociar%'
 ```
 :::
-::: UPDATES
+::: UPDATE
 
 Actualización de todos los registros de la tabla _Menu_, el campo _Activo_ se le asigna el valor 1.
 ```sql
@@ -473,7 +473,7 @@ SET Activo = 5;
 ```
 :::
 
-::: DELETES
+::: DELETE
 Eliminación de todos los registros de la tabla Historial_Conexion.
 <span style="color:red">*</span> Es muy importante ser cuidados al momento de ejecutar un query <span style="color:red">DELETE</span> para no eliminar registros que no se debian eliminar.
 ```sql
