@@ -647,7 +647,7 @@ AND ID <= 8;
 
 ::: Clase 2
 
-::: Caso a resolver
+::: Ejercicio
 **Diseñar y normalizar la base de datos para el siguiente caso:**<br>
 _CodigoFacilito_ y _HackerRank_ decidieron hacer una alianza por lo que ahora en la página de HackerRank.com será posible ver en cada reto uno o varios links a cursos, clases o bootcamps donde se abarquen los conceptos para resolver el reto.
 Por ejemplo: Un reto de SQL donde se pide hacer sumas y agrupaciones, podría tener links a un curso de SQL, a las clases especificas donde se abarcan funciones de agregación, selects y agrupaciones o al BootCamp de Backend con Python.
@@ -667,16 +667,6 @@ HackerRank ya tiene la base de datos de su sistema actual, únicamente es necesa
 Crear el diagrama Entidad Relación (Modelo Físico) de la nueva funcionalidad, generar el diccionario de datos y generar los scripts.
 :::
 
-::: Practica Sugerida
-Caso: _CodigoFacilito_ y _HackerRank_ decidieron hacer una alianza por lo que ahora en la página de CodigoFacilito será posible ver en cada clase, curso o bootcamp uno o varios links a retos de HackerRank donde se apliquen los conceptos aprendidos en esa clase, curso o bootcamp. Por ejemplo: Una lección sobre SQL y joins podría tener links a retos de distintas dificultades donde se apliquen joins. Ver pantallas de ejemplo para guiarse de la nueva funcionalidad deseada. Diseñar y normalizar las tablas para las nuevas funcionalidades.
-
-::: Pantallas de la funcionalidad deseada.
-![Prototipo 5](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/Prototipo5.png)
-![Prototipo 6](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/Prototipo6.png)
-![Prototipo 7](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/Prototipo7.png)
-:::
-
-:::
 
 :::
 
