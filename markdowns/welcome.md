@@ -591,7 +591,7 @@ AND ID <= 8;
 -[ ] SELECT * FROM Menu AND ID >= 10.
 -[ ] SELECT * FROM Menu AND ID > 10.
 
-?[Estructura del Query para insertar datos en la tabla Menu.]
+?[Sintaxis correcta para insertar datos en la tabla Menu.]
 -[ ] INSERT INTO Menu (Campo1, Campo2, etc) ('Valor 1', 'Valor 2', etc).
 -[ ] INSERT INTO Menu ('Valor 1', 'Valor 2', etc).
 -[x] INSERT INTO Menu (Campo1, Campo2, etc) VALUES ('Valor 1', 'Valor 2', etc).
@@ -603,7 +603,7 @@ AND ID <= 8;
 -[ ] INSERT INTO Menu (Titulo, Descripcion) ('Menu', 'Menu Principal').
 -[x] INSERT INTO Menu (Titulo, Descripcion) VALUES ('Menu', 'Menu Principal').
 
-?[Query para modificar el campo Activo de la tabla Menu y asignarle el valor 1 a todas las filas.]
+?[Sintaxis correcta para modificar el campo Activo de la tabla Menu y asignarle el valor 1 a todas las filas.]
 -[x] UPDATE Menu SET Activo = 1;
 -[ ] UPDATE Activo = 1 FROM Menu;
 -[ ] UPDATE Menu Activo = 1;
@@ -615,9 +615,9 @@ AND ID <= 8;
 -[ ] UPDATE Activo = 0 FROM Menu WHERE ID < 5;
 -[ ] UPDATE Menu SET Activo = 0 WHERE ID < 5;
 
-?[El query para eliminar todos los registros de la tabla Menu.]
+?[Sintaxis correcta para eliminar todos los registros de la tabla Menu.]
 -[ ] DELETE Menu;
--[ ] DROP Menu.
+-[ ] DROP Menu;
 -[x] DELETE FROM Menu;
 -[ ] TRUNCATE Menu;
 
