@@ -645,7 +645,7 @@ AND ID <= 8;
 
 :::
 
-::: Clase 2
+::: Clase 2: Diseño y normalización de base de datos
 
 ::: Ejercicio
 **Diseñar y normalizar la base de datos para la siguiente tabla con datos:**<br>
