@@ -511,4 +511,15 @@ AND ID <= 8;
 :::
 
 
+::: Clase 2: Diseño y normalización de base de datos
+
+::: Ejercicio
+**Diseñar y normalizar la base de datos para la siguiente tabla con datos:**<br>
+[Script para crear la tabla](https://github.com/mayracmg/Curso-SQL/blob/main/credit_card_fraud_detection.sql)
+
+Crear el diagrama Entidad Relación (Modelo Físico) y generar los scripts para normalizar la BD.
+:::
+
+
+
 :::
