@@ -510,6 +510,7 @@ AND ID <= 8;
 :::
 :::
 
+:::
 
 ::: Clase 2: Diseño y normalización de base de datos
 
@@ -518,8 +519,4 @@ AND ID <= 8;
 [Script para crear la tabla](https://github.com/mayracmg/Curso-SQL/blob/main/credit_card_fraud_detection.sql)
 
 Crear el diagrama Entidad Relación (Modelo Físico) y generar los scripts para normalizar la BD.
-:::
-
-
-
 :::
