@@ -520,3 +520,370 @@ AND ID <= 8;
 
 Crear el diagrama Entidad Relación (Modelo Físico) y generar los scripts para normalizar la BD.
 :::
+
+::: Clase 3
+1. Descargar la base de datos de ejemplo: [Descargar](https://github.com/mayracmg/Curso-SQL/blob/main/credit_card_db.sql)
+2. Copiar, pegar y ejecutar los queries en MySQL.
+
+### Diagrama ER de la BD descargada.
+![ER](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/CreditCardDB.png)
+
+::: Cláusula WHERE
+Define una condición (o varias) que debe cumplirse para que los datos sean devueltos.
+Los operadores utilizados en la cláusula WHERE (o cualquier condición definida en la cláusula) no tienen efecto en los datos almacenados en las tablas. 
+Sólo afectan a los datos devueltos cuando se invoca la vista.
+Se puede incluir en una instrucción <span style="color:blue">SELECT</span>, <span style="color:blue">UPDATE</span> o <span style="color:blue">DELETE</span>.
+
+::: Datos
+![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/EjemploDatos1.png)
+:::
+
+::: Aplicar un filtro
+![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/EjemploDatos2.png)
+:::
+
+::: Aplicar otro filtro
+![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/EjemploDatos3.png)
+:::
+
+## Operadores de Comparación
++ **Típicos** (=, !=, <, <=, >, >=)
++ **AND**: Para unir dos condiciones, ambas deben ser verdaderas.
++ **OR**: Para unir dos condiciones, una condición debe ser verdadera.
++ **IS NULL**: Para obtener las filas donde X columna tiene valor null.
++ **BETWEEN**: para identificar un rango de valores.
++ **NOT**: Para negar una condición.
++ **LIKE**: es posible especificar valores que son solamente similares a los valores almacenados.
+    - Signo de porcentaje (%): representa cero o más caracteres desconocidos.
+    - Guión bajo (_): representa exactamente un carácter desconocido.
++ **IN**: permite determinar si los valores en la columna especificada de una tabla están contenidos en una lista definida o contenidos dentro de otra tabla.
++ **EXISTS**: Está dedicado únicamente a determinar si la subconsulta arroja alguna fila o no.
+
+```sql
+SELECT *
+FROM credit_card_fraud_detection
+WHERE transaction_amount BETWEEN 20 AND 200
+AND (merchant_name LIKE 'A%'
+	OR merchant_name LIKE '_A%')
+AND country IN ('USA', 'India');
+```
+:::
+
+::: SubConsultas o SubQueries
+Proporcionan una forma de acceder a datos en múltiples tablas con una sola consulta. 
+Puede agregarse a una instrucción <span style="color:blue">SELECT</span>, <span style="color:blue">INSERT</span>, <span style="color:blue">UPDATE</span> o <span style="color:blue">DELETE</span> para permitir a esa instrucción utilizar los resultados de la consulta arrojados por la subconsulta. 
+La subconsulta es esencialmente una instrucción <span style="color:blue">SELECT</span> incrustada que actúa como una puerta de entrada a los datos en una segunda tabla. 
+
+Se pueden en dos categorías generales:
++ Las que pueden arrojar múltiples filas
++ Las que pueden arrojar solamente un valor
+
+Subconsulta que retorna múltiples filas.
+```sql
+SELECT *
+FROM credit_card_fraud_detection
+WHERE transaction_amount BETWEEN 20 AND 200
+AND (merchant_name LIKE 'A%'
+	OR merchant_name LIKE '_A%')
+AND country IN (
+	SELECT DISTINCT country
+    FROM credit_card_fraud_detection
+    WHERE user_age <= 18
+);
+```
+
+Subconsultas que retornan solamente un valor.
+```sql
+SELECT *
+FROM credit_card_fraud_detection
+WHERE transaction_amount BETWEEN 20 AND 200
+AND (merchant_name LIKE 'A%'
+	OR merchant_name LIKE '_A%')
+AND user_age > (
+	SELECT AVG(user_age)
+    FROM credit_card_fraud_detection
+);
+
+SELECT *, (SELECT AVG(user_age) FROM credit_card_fraud_detection) Average_age
+FROM credit_card_fraud_detection;
+```
+
+El resultado de la subconsulta tambien puede ser utilizado como que fuera una tabla asignandole un alias y seleccionar datos de ese resultado.
+```sql
+SELECT *
+FROM (
+	SELECT country, AVG(user_age)
+    FROM credit_card_fraud_detection
+    GROUP BY country
+) SubQuery;
+```
+
+Una subconsulta tambien puede tener mas subconsultas, como una cadena. <br>
+**<span style="color:red">*</span>** Al utilizar una varias subconsultas es importante ser cuidados ya que puede llegar a afectar significativamente el rendimiento del query.
+```sql
+SELECT *
+FROM (
+	SELECT country, AVG(user_age)
+    FROM credit_card_fraud_detection
+    WHERE user_age > (
+		SELECT AVG(user_age)
+		FROM credit_card_fraud_detection
+	)
+    GROUP BY country
+) SubQuery;
+```
+:::
+
+::: Funciones de Agregación
+Realizan operaciones sobre un grupo o un set de datos.
+Comúnmente son utilizadas con la cláusula <span style="color:blue">GROUP BY</span> para generar grupos y resultados sobre esos grupos.
+
+## Algunas funciones comunes
+
++ **AVG**: Para promediar valores
++ **COUNT**: Para contar registros
++ **COUNT(DISTINCT)**: Para contar registros unicos.
++ **MAX**: Devuelve el valor máximo.
++ **MIN**: Devuelve el valor mínimo.
++ **SUM**: Para sumar valores.
++ **STD**: Devuelve la desviación estándar.
+
+Ejemplos
+
+1. Seleccionamos el total de registros en la tabla _country_, para obtener otra métrica, solo cambiamos el COUNT por la función que necesitemos.
+```sql
+SELECT COUNT(*)
+FROM country;
+```
+2. Seleccionamos el total de registros en la tabla _user_, pero en lugar de un total general, es el total agrupado por el campo _gender_id_.
+```sql
+SELECT gender_id, COUNT(*)
+FROM user
+GROUP BY gender_id;
+```
+
+## GROUP BY
+Es posible utilizar más de una función de agregación en un mismo query.
+Todos los campos individuales que están junto a la función de agregación en la clausula <span style="color:blue">SELECT</span> debe ir tambien en la clausula <span style="color:blue">GROUP BY</span>.
+```sql
+SELECT transaction_date, MIN(transaction_amount), MAX(transaction_amount), AVG(Account_balance)
+FROM transaction
+GROUP BY transaction_date;
+
+SELECT country_id, isFraudulent, location_id, MIN(transaction_amount), MAX(transaction_amount), AVG(Account_balance)
+FROM transaction
+GROUP BY country_id, isFraudulent, location_id;
+```
+
+##  HAVING
+A diferencia de la cláusula <span style="color:blue">WHERE</span>, la cláusula <span style="color:blue">HAVING</span> se refiere a grupos, no a filas individuales.
+Se aplica a los resultados después de haberse agrupado (en la cláusula <span style="color:blue">GROUP BY</span>).
+Tiene la ventaja de permitir el uso de funciones establecidas tales como <span style="color:blue">AVG</span> o <span style="color:blue">SUM</span>, que no se pueden utilizar en la cláusula <span style="color:blue">WHERE</span> a menos que se coloquen dentro de una subconsulta.
+```sql
+SELECT country_id, isFraudulent, location_id, MIN(transaction_amount), MAX(transaction_amount), AVG(Account_balance)
+FROM transaction
+WHERE transaction_amount > 300
+GROUP BY country_id, isFraudulent, location_id
+HAVING AVG(Account_balance) > 18800;
+```
+
+# ORDER BY
+Toma la salida de la cláusula <span style="color:blue">SELECT</span> y ordena los resultados de la consulta de acuerdo con las especificaciones dentro de la cláusula <span style="color:blue">ORDER BY</span>.
+Se especifica una o más columnas y las palabras clave opcionales <span style="color:blue">ASC</span> o <span style="color:blue">DESC</span> (una por columna). Si no se especifica la palabra clave, setoma <span style="color:blue">ASC</span>.
++ **ASC**: Orden ascendente
++ **DESC**: Orden descendente.
+
+```sql
+SELECT country_id, isFraudulent, location_id, MIN(transaction_amount), MAX(transaction_amount), AVG(Account_balance)
+FROM transaction
+WHERE transaction_amount > 300
+GROUP BY country_id, isFraudulent, location_id
+HAVING AVG(Account_balance) > 18800
+ORDER BY country_id DESC, isFraudulent, MIN(transaction_amount)
+```
+
+
+:::
+
+::: Joins
+Un componente importante de cualquier base de datos relacional es la correlación que puede existir entre dos tablas cualesquiera. 
+En SQL podemos unir las tablas en una instrucción. Una operación join es una operación que hace coincidir las filas en una tabla con las filas de manera tal que las columnas de ambas tablas puedan ser colocadas lado a lado en los resultados de la consulta como si éstos vinieran de una sola tabla.
+
+## Tipos de joins
+![Joins](https://ingenieriadesoftware.es/wp-content/uploads/2018/07/sqljoin.jpeg)
+
++ <span style="color:blue">INNER JOIN</span>: Devuelve registros que tienen valores coincidentes en ambas tablas
++ <span style="color:blue">LEFT JOIN</span>: Devuelve todos los registros de la tabla de la izquierda y los registros coincidentes de la tabla de la derecha.
++ <span style="color:blue">RIGHT JOIN</span>: Devuelve todos los registros de la tabla de la derecha y los registros coincidentes de la tabla de la izquierda.
++ <span style="color:blue">CROSS JOIN</span> (OUTER JOIN o FULL OUTER JOIN): Combina todas las filas de la tabla A con todas las filas de la tabla B.
++ <span style="color:purple">SELF JOIN</span>: Aplica las reglas de los joins anteriores, solo que se realiza con la misma tabla.
+
+### Ejemplo INNER JOIN
+![INNER JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/InnerJoin.png)
+
+**A**: user<br>
+**B**: gender
+```sql
+SELECT G.Name Gender, COUNT(*) users
+FROM user U
+INNER JOIN gender G ON G.gender_id = U.gender_id
+GROUP BY G.Name;
+```
+
+Otra forma de escribirlo:
+```sql
+SELECT G.Name Gender, COUNT(*) users
+FROM user U
+JOIN gender G ON G.gender_id = U.gender_id
+GROUP BY G.Name;
+
+SELECT G.Name Gender, COUNT(*) users
+FROM user U, gender G 
+WHERE G.gender_id = U.gender_id
+GROUP BY G.Name;
+```
+
+**A**: credit_card_fraud_detection<br>
+**B**: credit_card_fraud_detection
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+INNER JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date
+	AND A.country = 'USA' 
+    AND B.country = 'Canada';
+```
+
+### Ejemplo LEFT JOIN
+![LEFT JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/LeftJoin.jpg)
+
+**A**: credit_card_fraud_detection<br>
+**B**: credit_card_fraud_detection
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+LEFT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA' 
+```
+
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+LEFT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA' 
+WHERE B.transaction_id IS NULL;
+```
+
+### Ejemplo RIGHT JOIN
+![RIGHT JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/RightJoin.jpg)
+
+**A**: credit_card_fraud_detection<br>
+**B**: credit_card_fraud_detection
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+RIGHT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA';
+```
+
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+RIGHT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA' 
+WHERE A.transaction_id IS NULL;
+```
+
+### Ejemplo CROSS JOIN
+![CROSS JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/FullOuterJoin.png)
+
+**A**: country<br>
+**B**: location
+```sql
+SELECT *
+FROM country A
+CROSS JOIN location B;
+
+SELECT *
+FROM country A, location B
+```
+
+
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+CROSS JOIN credit_card_fraud_detection B 
+WHERE A.country != B.country
+```
+
+### Ejemplo SELF JOIN
+
+**A**: credit_card_fraud_detection<br>
+**B**: credit_card_fraud_detection
+```sql
+SELECT A.transaction_id, A.merchant_name, A.country, A.card_type, A.transaction_date, B.transaction_date
+FROM credit_card_fraud_detection A
+LEFT JOIN credit_card_fraud_detection B ON A.merchant_name = B.merchant_name
+	AND A.country = B.country
+    AND A.card_type = B.card_type
+    AND A.transaction_date != B.transaction_date;
+```
+---
+## Joins con tablas intermediarias
+Para obtener la lista de clientes y los productos que ha comprado cada cliente no existe una relación directa entre la tabla _customers_ y _products_ por lo que es necesario hacer los joins con tablas segun el diagrama ER muestra las llaves foraneas (como una cascada) hasta lograr llegar a la tabla de productos.
+
+::: Joins
+![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/JoinsCascada.png)
+:::
+
+```sql
+SELECT C.customerNumber, C.customerName, P.productCode, P.productName
+FROM customers C
+INNER JOIN orders O ON C.customerNumber = O.customerNumber
+INNER JOIN orderdetails D ON D.orderNumber = O.orderNumber
+INNER JOIN products P ON P.productCode = D.productCode;
+```
+:::
+
+::: Common Table Expressions
+Es un conjunto de resultados con nombre temporal al que puede hacer referencia dentro de una instrucción <span style="color:blue">SELECT</span>, <span style="color:blue">INSERT</span>, <span style="color:blue">UPDATE</span> o <span style="color:blue">DELETE</span>. El CTE también se la puede usar en una vista.
+
+**Sintaxis**:
+
+<span style="color:blue">WITH</span> + alias + <span style="color:blue">AS</span> + (QUERY CTE)
+Query que hace referencia al CTE
+
+```sql
+WITH UK_Customers AS (
+  SELECT customerNumber 
+  FROM customers
+  WHERE country = 'UK'
+)
+SELECT *
+FROM orders O
+INNER JOIN UK_Customers C ON C.customerNumber = O.customerNumber;
+
+WITH CTE AS (
+	SELECT CustomerNumber
+	FROM customers
+	WHERE customerNumber BETWEEN 121 AND 471
+	AND (customerName LIKE 'A%'
+		OR customerName LIKE '_A%')
+	AND addressLine1 IS NOT NULL
+	AND addressLine2 IS NULL
+	AND creditLimit > 0
+	AND postalCode IN ('4110', '51247')
+)
+UPDATE customers
+INNER JOIN CTE C 
+  ON C.CustomerNumber = customers.CustomerNumber
+SET customers.creditLimit = 17.19;
+```
+:::
+
+
+
+:::
