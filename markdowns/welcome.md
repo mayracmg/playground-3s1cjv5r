@@ -520,6 +520,7 @@ AND ID <= 8;
 
 Crear el diagrama Entidad Relación (Modelo Físico) y generar los scripts para normalizar la BD.
 :::
+:::
 
 ::: Clase 3
 1. Descargar la base de datos de ejemplo: [Descargar](https://github.com/mayracmg/Curso-SQL/blob/main/credit_card_db.sql)
@@ -885,5 +886,3 @@ SET customers.creditLimit = 17.19;
 :::
 
 
-
-:::
