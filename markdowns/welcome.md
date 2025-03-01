@@ -716,7 +716,8 @@ En SQL podemos unir las tablas en una instrucción. Una operación join es una o
 + <span style="color:blue">INNER JOIN</span>: Devuelve registros que tienen valores coincidentes en ambas tablas
 + <span style="color:blue">LEFT JOIN</span>: Devuelve todos los registros de la tabla de la izquierda y los registros coincidentes de la tabla de la derecha.
 + <span style="color:blue">RIGHT JOIN</span>: Devuelve todos los registros de la tabla de la derecha y los registros coincidentes de la tabla de la izquierda.
-+ <span style="color:blue">CROSS JOIN</span> (OUTER JOIN o FULL OUTER JOIN): Combina todas las filas de la tabla A con todas las filas de la tabla B.
++ <span style="color:blue">FULL JOIN</span>: No existe como tal en MySQL (si existe en otras bases de datos) pero se puede lograr obtener mediante la union de un <span style="color:blue">LEFT JOIN</span> y un <span style="color:blue">RIGHT JOIN</span>.
++ <span style="color:blue">CROSS JOIN</span>: Combina todas las filas de la tabla A con todas las filas de la tabla B.
 + <span style="color:purple">SELF JOIN</span>: Aplica las reglas de los joins anteriores, solo que se realiza con la misma tabla.
 
 ### Ejemplo INNER JOIN
@@ -798,8 +799,29 @@ RIGHT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_D
 WHERE A.transaction_id IS NULL;
 ```
 
-### Ejemplo CROSS JOIN
+### Ejemplo FULL JOIN
 ![CROSS JOIN](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/FullOuterJoin.png)
+
+**A**: credit_card_fraud_detection<br>
+**B**: credit_card_fraud_detection
+
+```sql
+SELECT *
+FROM credit_card_fraud_detection A
+LEFT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA'
+
+UNION
+
+SELECT *
+FROM credit_card_fraud_detection A
+RIGHT JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_Date 
+    AND B.country = 'Canada'
+	AND A.country = 'USA' 
+```
+
+### Ejemplo CROSS JOIN
 
 **A**: country<br>
 **B**: location
@@ -833,19 +855,17 @@ LEFT JOIN credit_card_fraud_detection B ON A.merchant_name = B.merchant_name
     AND A.transaction_date != B.transaction_date;
 ```
 ---
-## Joins con tablas intermediarias
-Para obtener la lista de clientes y los productos que ha comprado cada cliente no existe una relación directa entre la tabla _customers_ y _products_ por lo que es necesario hacer los joins con tablas segun el diagrama ER muestra las llaves foraneas (como una cascada) hasta lograr llegar a la tabla de productos.
+## Joins con varias tablas
+Cuando unir dos tablas no es necesario para generar el resultado esperado, puede ser necesario unir mas de 2 tablas.
 
 ::: Joins
 ![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/JoinsCascada.png)
 :::
 
 ```sql
-SELECT C.customerNumber, C.customerName, P.productCode, P.productName
-FROM customers C
-INNER JOIN orders O ON C.customerNumber = O.customerNumber
-INNER JOIN orderdetails D ON D.orderNumber = O.orderNumber
-INNER JOIN products P ON P.productCode = D.productCode;
+SELECT T.*, U.birthdate
+FROM transaction T
+INNER JOIN USER U ON U.user_id = T.user_id;
 ```
 :::
 
@@ -858,30 +878,39 @@ Es un conjunto de resultados con nombre temporal al que puede hacer referencia d
 Query que hace referencia al CTE
 
 ```sql
-WITH UK_Customers AS (
-  SELECT customerNumber 
-  FROM customers
-  WHERE country = 'UK'
+WITH A AS (
+	SELECT *
+	FROM credit_card_fraud_detection
+	WHERE country = 'USA' 
+),
+B AS (
+	SELECT *
+	FROM credit_card_fraud_detection
+	WHERE country = 'Canada' 
 )
 SELECT *
-FROM orders O
-INNER JOIN UK_Customers C ON C.customerNumber = O.customerNumber;
+FROM A
+INNER JOIN B ON A.transaction_date = B.transaction_date;
+
 
 WITH CTE AS (
-	SELECT CustomerNumber
-	FROM customers
-	WHERE customerNumber BETWEEN 121 AND 471
-	AND (customerName LIKE 'A%'
-		OR customerName LIKE '_A%')
-	AND addressLine1 IS NOT NULL
-	AND addressLine2 IS NULL
-	AND creditLimit > 0
-	AND postalCode IN ('4110', '51247')
+	SELECT transaction_id, user_id
+	FROM credit_card_fraud_detection
 )
-UPDATE customers
+UPDATE transaction
+INNER JOIN cte ON cte.transaction_id = transaction.transaction_id
+SET transaction.user_id = cte.user_id;
+
+WITH CTE AS (
+	SELECT U.user_id, G.name
+	FROM user U
+	INNER JOIN gender G ON U.gender_id = G.gender_id
+    WHERE G.name = 'Female'
+)
+UPDATE transaction
 INNER JOIN CTE C 
-  ON C.CustomerNumber = customers.CustomerNumber
-SET customers.creditLimit = 17.19;
+  ON C.user_id = transaction.user_id
+SET transaction.transaction_amount = transaction.transaction_amount * 0.9;
 ```
 :::
 
