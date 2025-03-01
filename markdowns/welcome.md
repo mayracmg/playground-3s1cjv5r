@@ -522,12 +522,12 @@ Crear el diagrama Entidad Relación (Modelo Físico) y generar los scripts para 
 :::
 :::
 
-::: Clase 3
+::: Clase 3: Relaciones en base de datos
 1. Descargar la base de datos de ejemplo: [Descargar](https://github.com/mayracmg/Curso-SQL/blob/main/credit_card_db.sql)
 2. Copiar, pegar y ejecutar los queries en MySQL.
 
 ### Diagrama ER de la BD descargada.
-![ER](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/CreditCardDB.png)
+![ER](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/CreditCardDB.png)
 
 ::: Cláusula WHERE
 Define una condición (o varias) que debe cumplirse para que los datos sean devueltos.
@@ -720,7 +720,7 @@ En SQL podemos unir las tablas en una instrucción. Una operación join es una o
 + <span style="color:purple">SELF JOIN</span>: Aplica las reglas de los joins anteriores, solo que se realiza con la misma tabla.
 
 ### Ejemplo INNER JOIN
-![INNER JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/InnerJoin.png)
+![INNER JOIN](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/InnerJoin.png)
 
 **A**: user<br>
 **B**: gender
@@ -755,7 +755,7 @@ INNER JOIN credit_card_fraud_detection B ON A.transaction_date = B.transaction_D
 ```
 
 ### Ejemplo LEFT JOIN
-![LEFT JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/LeftJoin.jpg)
+![LEFT JOIN](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/LeftJoin.jpg)
 
 **A**: credit_card_fraud_detection<br>
 **B**: credit_card_fraud_detection
@@ -777,7 +777,7 @@ WHERE B.transaction_id IS NULL;
 ```
 
 ### Ejemplo RIGHT JOIN
-![RIGHT JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/RightJoin.jpg)
+![RIGHT JOIN](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/RightJoin.jpg)
 
 **A**: credit_card_fraud_detection<br>
 **B**: credit_card_fraud_detection
@@ -799,7 +799,7 @@ WHERE A.transaction_id IS NULL;
 ```
 
 ### Ejemplo CROSS JOIN
-![CROSS JOIN](https://github.com/mayracmg/playground-3s1cjv5r/blob/master/FullOuterJoin.png)
+![CROSS JOIN](https://raw.githubusercontent.com/mayracmg/playground-3s1cjv5r/refs/heads/master/FullOuterJoin.png)
 
 **A**: country<br>
 **B**: location
