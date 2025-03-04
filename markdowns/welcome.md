@@ -858,9 +858,6 @@ LEFT JOIN credit_card_fraud_detection B ON A.merchant_name = B.merchant_name
 ## Joins con varias tablas
 Cuando unir dos tablas no es necesario para generar el resultado esperado, puede ser necesario unir mas de 2 tablas.
 
-::: Joins
-![ER](https://raw.githubusercontent.com/mayracmg/playground-sql-facilito/master/markdowns/JoinsCascada.png)
-:::
 
 ```sql
 SELECT T.*, U.birthdate
